@@ -1,14 +1,6 @@
 #!/usr/bin/env python
 
-#SBATCH --partition=short    ### Partition
-#SBATCH --job-name=demult  ### Job Name
-#SBATCH --output=demult.out    ### File in which to store job output
-#SBATCH --time=1-00:00:00   ### Wall clock time limit in Days-HH:MM:SS
-#SBATCH --nodes=1           ### Number of nodes needed for the job
-#SBATCH --ntasks-per-node=14 ### Number of tasks to be launcged per Node
 
-
-#################################################################
 
 #create a new working directory for this assignment on your local computer so you can use it on jupyter notebook
 #this assigment can be found on : /projects/bgmp/dchilin/Bi624/Demultiplex
@@ -32,14 +24,40 @@
 
 
 ###########################################################
+
+#use argparse to call out your arguments  
+import argparse
+def get_arguments():
+    parser = argparse.ArgumentParser(description="Demultiplex")
+    parser.add_argument("-R1", "--Read_1_filename", help="Filename for the Forward Read", required=True, type=str)
+    parser.add_argument("-I1", "--Index_1_filename", help="Filename for the Forward Read Index", required=True, type=str)
+    parser.add_argument("-R2", "--Read_2_filename", help="Filename for the Reverse Read", required=True, type=str)
+    parser.add_argument("-I2", "--Index2_filename", help="Filename for the Reverse Read Index", required=True, type=str)
+#    parser.add_argument("-nf1", "--new_file_R1", help="Type new output file name for the undeterninded reads for read 1", required=True, type=str)
+#    parser.add_argument("-nf2", "--new_file_R2", help="Type new output file name for the undeterninded reads for read 2", required=True, type=str)
+    return parser.parse_args()
+
+#global variables                         
+args = get_arguments() 
+R1 = args.Read_1_filename
+I1 = args.Index_1_filename
+R2 = args.Read_2_filename
+I2 = args.Index2_filename
+#nf1 = args.new_file_R1
+#nf2 = args.new_file_R2
+
+#new files will still be created and spit out
+
+#####################################################################
+
 #files:
 #create variables for each file
 
 #original files
-R1 = '/projects/bgmp/dchilin/Bi624/Demultiplex/1294_S1_L008_R1_001.fastq'
-I1 = '/projects/bgmp/dchilin/Bi624/Demultiplex/1294_S1_L008_R2_001.fastq'
-R2 = '/projects/bgmp/dchilin/Bi624/Demultiplex/1294_S1_L008_R4_001.fastq'
-I2 = '/projects/bgmp/dchilin/Bi624/Demultiplex/1294_S1_L008_R3_001.fastq'
+#R1 = '/projects/bgmp/dchilin/Bi624/Demultiplex/1294_S1_L008_R1_001.fastq'
+#I1 = '/projects/bgmp/dchilin/Bi624/Demultiplex/1294_S1_L008_R2_001.fastq'
+#R2 = '/projects/bgmp/dchilin/Bi624/Demultiplex/1294_S1_L008_R4_001.fastq'
+#I2 = '/projects/bgmp/dchilin/Bi624/Demultiplex/1294_S1_L008_R3_001.fastq'
 
 
 #test files contain 1 million lines each
@@ -92,8 +110,8 @@ with open (R1, 'r') as read_1, \
     open (I1, 'r') as index_1,\
     open (R2, 'r') as read_2, \
     open (I2, 'r') as index_2, \
-    open('undetermine_R1.fq', 'w') as un_r1, \
-    open('undetermine_R2.fq', 'w') as un_r2:
+    open ('undetermine_R1.fq', 'w') as un_r1,\ 
+    open ('undetermine_R2.fq', 'w') as un_r2:
     while R1 and I2 and R2 and I2:
         #Read1 (R1)
         #remove the new line from each line using .strip()
@@ -277,3 +295,4 @@ print('# of acceptable index pair reads:', good_reads)
 # indexes that match to a barcode: 1
 # indexes that did not match to a barcode: 0
 # demultiplexed reads: 1 
+
